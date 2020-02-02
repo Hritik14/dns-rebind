@@ -28,11 +28,11 @@ DirectoryIndex payload.html
 ```
 
 ## Steps to reproduce
-Send victim to the hosted server address, here rebind.mysite.xyz    
-Goto DNS Settings and point rebind.mysite.xyz to internal IP, say 192.168.1.1
-`watch ls -lt logcat.log`    
-You will soon start getting files in logcat.log directory, that is the content of internal IP.    
-After you start getting files, edit `logcat.py` and use the `inject` var to inject JS    
-You can inject builtin `navigate(_url_, _method_, _data_)` to navigate to different page.    
-run `bash uniq_files logcat.log` to get all the uniquely fetched files    
-In the end, make sure to clean the logcat.log directory using `rm -f logcat.log/*` to save disk space.
+- Send victim to the hosted server address, here rebind.mysite.xyz    
+- Goto DNS Settings and point rebind.mysite.xyz to internal IP, say 192.168.1.1
+- `watch ls -lt logcat.log`    
+- You will soon start getting files in logcat.log directory, that is the content of internal IP.    
+- After you start getting files, edit `logcat.py` and use the `inject` var to inject JS    
+- You can inject builtin `navigate(_url_, _method_, _data_)` to navigate to different page.    
+- Run `bash uniq_files logcat.log` to get all the uniquely fetched files    
+- In the end, make sure to clean the logcat.log directory using `rm -f logcat.log/*` to save disk space.
