@@ -4,6 +4,7 @@
 - Make sure that logcat.mysite.xyz points to `logcat.py` python file
 - logcat.mysite.xyz must be enabled for CORS
 - rebind.mysite.xyz points to payload.html
+- Replace all occurrences of `mysite` to your test domain. (Use `grep mysite -R` to view and sed to replace)
 
 A dummy apache config is given below
 ```

