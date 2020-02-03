@@ -1,3 +1,3 @@
 # Ideas
-[ ] Javascript console access
+[x] Javascript console access
 [ ] Console access for multiple users (like meterpreter session)

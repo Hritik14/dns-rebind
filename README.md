@@ -5,6 +5,8 @@
 - logcat.mysite.xyz must be enabled for CORS
 - rebind.mysite.xyz points to payload.html
 - Replace all occurrences of `mysite` to your test domain. (Use `grep mysite -R` to view and sed to replace)
+- Install python `websockets` or just use `pipenv install`
+- Make sure inbound connections to port 80 (logcat,rebind) and 31337 (websockets) are allowed
 
 A dummy apache config is given below
 ```
@@ -31,9 +33,11 @@ DirectoryIndex payload.html
 ## Steps to reproduce
 - Send victim to the hosted server address, here rebind.mysite.xyz    
 - Goto DNS Settings and point rebind.mysite.xyz to internal IP, say 192.168.1.1
-- `watch ls -lt logcat.log`    
-- You will soon start getting files in logcat.log directory, that is the content of internal IP.    
-- After you start getting files, edit `logcat.py` and use the `inject` var to inject JS    
-- You can inject builtin `navigate(_url_, _method_, _data_)` to navigate to different page.    
-- Run `bash uniq_files logcat.log` to get all the uniquely fetched files    
-- In the end, make sure to clean the logcat.log directory using `rm -f logcat.log/*` to save disk space.
+- Run `python shell.py`
+- Wait for the connection
+- Enjoy the JS Shell
+- You can inject builtin `navigate(url, method, data)` to navigate to a different page.
+- navigate(...) saves fetched pages in `logcat.log/`
+
+## Screenshot
+![Screenshot](screenshot.png)
