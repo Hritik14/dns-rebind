@@ -1,6 +1,6 @@
 # DNS Rebinding
 
-DNS Rebinding is essentially bypasses the Same Origin Policy on web browsers and allows a malicious website to access content on local network.
+DNS Rebinding essentially bypasses the Same Origin Policy on web browsers and allows a malicious website to access content on the local network.  
 [Here](https://youtu.be/idFhbJRxdHc?t=10735) is a quick presentation on the topic and this tool.
 
 ## Installation
