@@ -42,5 +42,5 @@ DirectoryIndex payload.html
 - You can inject builtin `navigate(url, method, data)` to navigate to a different page.
 - navigate(...) saves fetched pages in `logcat.log/`
 
-## Screenshot
-![Screenshot](screenshot.png)
+## PoC Video
+[![Screenshot](screenshot.png)](https://youtu.be/3BVM72ZD0SY)
